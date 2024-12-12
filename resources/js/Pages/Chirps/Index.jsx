@@ -8,12 +8,18 @@ import Chirp from '@/Components/Chirp';
 export default function Index({ auth, chirps }) {
     const { data, setData, post, processing, reset, errors, progress } = useForm({
         message: '',
-        image: '',
+        image: null,
     });
 
     const submit = (e) => {
         e.preventDefault();
-        post(route('chirps.store'), { onSuccess: () => reset() });
+        const formData = new FormData();
+        formData.append('image', data.image);
+
+        post(route('chirps.store'), {
+            data: formData,
+            onSuccess: () => reset()
+        });
     };
 
     return (
@@ -33,7 +39,7 @@ export default function Index({ auth, chirps }) {
                     </div>
 
                     <div className="w-full">
-                        <input type="file" value={data.image} onChange={e => {
+                        <input type="file" onChange={e => {
                             setData('image', e.target.files[0]);
                             console.log(e.target.files[0]);
                         }} />
@@ -42,6 +48,7 @@ export default function Index({ auth, chirps }) {
                                 {progress.percentage}%
                             </progress>
                         )}
+                        <InputError message={errors.image} className="mt-2" />
                     </div>
 
                     <div className="w-full">

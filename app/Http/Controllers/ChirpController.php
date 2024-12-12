@@ -6,6 +6,7 @@ use App\Models\Chirp;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -34,9 +35,14 @@ class ChirpController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
+
         $validated = $request->validate([
             'message' => 'required|string|max:255',
+            'image' => ['nullable', 'file', 'mimes:jpg,jpeg,png,pdf', 'max:2048'],
         ]);
+
+        // Simpan file ke storage (misalnya folder 'uploads')
+        $path = $request->file('image')->store('uploads', 'public');
 
         $request->user()->chirps()->create($validated);
 
@@ -69,6 +75,12 @@ class ChirpController extends Controller
         $validated = $request->validate([
             'message' => 'required|string|max:255',
         ]);
+
+        //hapus dulu file yang sudah di upload
+        Storage::disk('public')->delete($chirp->path);
+
+        // Simpan file ke storage (misalnya folder 'uploads')
+        $path = $request->file('image')->store('uploads', 'public');
 
         $chirp->update($validated);
 
