@@ -42,7 +42,7 @@ class HandleInertiaRequests extends Middleware
 
         $user = $request->user();
 
-        if ($user->hasRole('admin')) {
+        if ($user && $user->hasRole('admin')) {
             return 'admin';
         }
 

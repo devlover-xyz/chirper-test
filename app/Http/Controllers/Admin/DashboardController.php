@@ -18,4 +18,14 @@ class DashboardController extends Controller
             'users' => $users
         ]);
     }
+
+    public function create(Request $request)
+    {
+
+        $users = User::all();
+
+        return Inertia::render('Admin/Users/Create', [
+            'users' => $users
+        ]);
+    }
 }
