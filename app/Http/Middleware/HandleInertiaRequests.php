@@ -36,4 +36,16 @@ class HandleInertiaRequests extends Middleware
             ],
         ];
     }
+
+    public function rootView(Request $request): string
+    {
+
+        $user = $request->user();
+
+        if ($user->hasRole('admin')) {
+            return 'admin';
+        }
+
+        return $this->rootView;
+    }
 }
